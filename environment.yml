@@ -1,4 +1,4 @@
-name: myenv
+name: food_review
 channels:
   - conda-forge
 dependencies:
