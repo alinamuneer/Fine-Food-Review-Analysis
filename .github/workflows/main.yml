@@ -22,4 +22,6 @@ jobs:
           activate-environment: food_review
 
       - name: Run tests
-        run: pytest test
+        run: |
+          conda activate food_review
+          pytest test
