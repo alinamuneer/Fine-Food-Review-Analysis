@@ -14,9 +14,12 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from contractions import contractions_dict
 
-from settings import REVIEW_FILE_PATH
-# DIR_PATH = Path(__file__).parent.parent
-N = 1000
+import sys
+sys.path.append('..')
+
+from settings import REVIEW_FILE_PATH, DATA_DIR
+
+N = 100
 
 PATTERNS = [
     re.compile(r"[^\w\s]"),  # punctuation
@@ -188,7 +191,7 @@ def processing_pipeline(data_name,
 
 def save_processed_data(df: pd.DataFrame,
                         data_name: str) -> None:
-    processed_data_path = 'data/processed'
+    processed_data_path = f'{DATA_DIR}/processed'
     df.to_csv(f'{processed_data_path}/{data_name}_processed_{N}.csv',
               index=False, encoding='utf-8')
     
