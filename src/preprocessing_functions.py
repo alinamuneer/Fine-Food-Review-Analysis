@@ -1,12 +1,8 @@
 """
-Main script for processing the data.
+Preprocessing functions.
 """
-from time import time
 import re
-from pathlib import Path, WindowsPath
 import unicodedata
-from typing import List, Callable
-import pandas as pd
 
 import spacy
 from bs4 import BeautifulSoup
@@ -14,12 +10,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from contractions import contractions_dict
 
-import sys
-sys.path.append('..')
-
-from settings import REVIEW_FILE_PATH, DATA_DIR
-
-N_SAMPLE = 100
+import pandas as pd
+from typing import List, Dict
 
 PATTERNS = [
     re.compile(r"[^\w\s]"),  # punctuation
@@ -57,7 +49,7 @@ def remove_html(text: str) -> str:
     return cleaned_text
 
 
-def custom_contractions():
+def custom_contractions() -> Dict[str, str]:
     contractions_keys = [contr.lower() for contr in contractions_dict.keys()]
     contractions_keys = [re.sub(r"´", r"\'", key) for key in contractions_keys]
 
@@ -68,7 +60,7 @@ def custom_contractions():
     return contractions_customed
 
 
-def map_contractions(text):
+def map_contractions(text: str) -> str:
     contraction_patterns = [
         re.compile(r"\b\w+[\'|'´]\w+\b", flags=re.IGNORECASE | re.DOTALL),
         re.compile(r'gonna|wanna', flags=re.IGNORECASE | re.DOTALL)]
@@ -158,52 +150,3 @@ def clean_text(text: str) -> str:
     processed_text = remove_stop_words(processed_text)
 
     return processed_text
-
-
-def processing_pipeline(data_name: WindowsPath,
-                        encoding: str,
-                        modify_func: Callable[[pd.DataFrame], pd.DataFrame]) -> pd.DataFrame:
-
-    df = pd.read_csv(data_name,
-                     encoding=encoding)
-
-    df = df.sample(n=N_SAMPLE, random_state=42)
-
-    # removing duplicates
-    df.drop_duplicates(subset=['Text'], inplace=True)
-    df = modify_func(df)
-    
-    df['text_cleaned'] = df.Text.apply(lambda x: clean_text(x))
-    df['summary_cleaned'] = df.Summary.apply(lambda x: clean_text(x))
-
-    return df
-
-
-def save_processed_data(df: pd.DataFrame,
-                        data_name: str) -> None:
-    processed_data_path = f'{DATA_DIR}/processed'
-    df.to_csv(f'{processed_data_path}/{data_name}_processed_{N_SAMPLE}.csv',
-              index=False, encoding='utf-8')
-    
-def main(save: bool = True) -> None:
-
-    t = time()
-    print('Processing...')
-    data_name = str(REVIEW_FILE_PATH).split('\\')[-1].split('.')[0]
-    
-
-
-    # processing dataset
-    df = processing_pipeline(REVIEW_FILE_PATH,
-                                   'utf8',
-                                   add_polarity_label)
-    
-    elapsed_time = round((time() - t) / 60, 2)
-    print(f'Time to clean up everything: {elapsed_time} min.')
-
-    # save
-    if save:
-        save_processed_data(df, data_name)
-
-if __name__ == '__main__':
-    main()
