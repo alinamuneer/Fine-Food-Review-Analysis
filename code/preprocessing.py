@@ -19,7 +19,7 @@ sys.path.append('..')
 
 from settings import REVIEW_FILE_PATH, DATA_DIR
 
-N_SAMPLE = 1000
+N_SAMPLE = 100
 
 PATTERNS = [
     re.compile(r"[^\w\s]"),  # punctuation
@@ -35,12 +35,6 @@ PATTERNS = [
     re.compile(r'&amp')
 ]
 
-
-def load_data(data_name: str, encoding: str) -> pd.DataFrame:
-    data_path = os.path.join(data_name)
-    df = pd.read_csv(data_path,
-                     encoding=encoding)
-    return df
 
 def add_polarity_label(df: pd.DataFrame) -> pd.DataFrame:
     df['Polarity'] = df.Score.apply(lambda x: 0 if x == 1 or x == 2 else 1)
@@ -173,13 +167,14 @@ def processing_pipeline(data_name,
                         encoding,
                         modify_func) -> pd.DataFrame:
 
-    df = load_data(data_name, encoding=encoding)
+    df = pd.read_csv(data_name,
+                     encoding=encoding)
 
-    df = modify_func(df)
     df = df.sample(n=N_SAMPLE, random_state=42)
 
     # removing duplicates
     df.drop_duplicates(subset=['Text'], inplace=True)
+    df = modify_func(df)
     
     df['text_cleaned'] = df.Text.apply(lambda x: clean_text(x))
     df['summary_cleaned'] = df.Summary.apply(lambda x: clean_text(x))
