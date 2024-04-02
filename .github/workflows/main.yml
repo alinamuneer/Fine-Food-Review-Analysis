@@ -5,43 +5,32 @@ on:
     branches: 
       - dev
 
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-
-#       - name: Set up Conda
-#         uses: conda-incubator/setup-miniconda@v2
-#         with:
-#           auto-update-conda: true
-#           python-version: 3.11
-#           environment-file: environment.yml
-#           activate-environment: food_review
-
-#       - name: Run tests
-#         run: |
-#           conda init
-#           conda activate food_review
-#           pytest test
-
-
 jobs:
-  build-linux:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.11
-    - name: Install dependencies
-      run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        $CONDA/bin/conda env update --file environment.yml --name base
-    - name: Test with pytest
-      run: |
-        $CONDA/bin/pytest
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: food_review
+          environment-file: environment.yml
+          auto-activate-base: false
+
+      
+      # checking if the environment works well
+      - run: |
+          conda info
+          conda list
+
+      - name: Run tests
+        run: |
+          pytest test
+
+
