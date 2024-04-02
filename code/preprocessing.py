@@ -42,11 +42,6 @@ def load_data(data_name: str, encoding: str) -> pd.DataFrame:
                      encoding=encoding)
     return df
 
-def drop_columns(df: pd.DataFrame, columns: list):
-    for column in columns:
-        df.drop(column, axis=1, inplace=True)
-    return df
-
 def add_polarity_label(df: pd.DataFrame) -> pd.DataFrame:
     df['Polarity'] = df.Score.apply(lambda x: 0 if x == 1 or x == 2 else 1)
     return df
