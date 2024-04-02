@@ -14,7 +14,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from contractions import contractions_dict
 
-from settings import *
+from settings import REVIEW_FILE_PATH
 # DIR_PATH = Path(__file__).parent.parent
 N = 1000
 
