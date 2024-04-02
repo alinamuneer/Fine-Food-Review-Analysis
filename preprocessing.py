@@ -115,7 +115,7 @@ def lemmatize(string):
 
 def remove_stop_words(tokens):
     stop_words = load_stop_words()
-    tokens = [t for t in tokens if t not in stop_words]
+    tokens = ' '.join([t for t in tokens if t not in stop_words])
     return tokens
 
 
