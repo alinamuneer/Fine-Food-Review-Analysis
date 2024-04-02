@@ -176,7 +176,10 @@ def processing_pipeline(data_name,
     df = load_data(data_name, encoding=encoding)
 
     df = modify_func(df)
-    df = df.sample(n=N, random_state=42)
+    df = df.sample(n=N_SAMPLE, random_state=42)
+
+    # removing duplicates
+    df.drop_duplicates(subset=['Text'], inplace=True)
     
     df['text_cleaned'] = df.Text.apply(lambda x: clean_text(x))
     df['summary_cleaned'] = df.Summary.apply(lambda x: clean_text(x))
@@ -187,7 +190,7 @@ def processing_pipeline(data_name,
 def save_processed_data(df: pd.DataFrame,
                         data_name: str) -> None:
     processed_data_path = f'{DATA_DIR}/processed'
-    df.to_csv(f'{processed_data_path}/{data_name}_processed_{N}.csv',
+    df.to_csv(f'{processed_data_path}/{data_name}_processed_{N_SAMPLE}.csv',
               index=False, encoding='utf-8')
     
 def main(save: bool = True) -> None:
