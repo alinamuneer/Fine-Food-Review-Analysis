@@ -3,10 +3,10 @@ Main script for processing the data.
 """
 from time import time
 import re
-from pathlib import Path
+from pathlib import Path, WindowsPath
 import unicodedata
+from typing import List, Callable
 import pandas as pd
-import os
 
 import spacy
 from bs4 import BeautifulSoup
@@ -40,17 +40,17 @@ def add_polarity_label(df: pd.DataFrame) -> pd.DataFrame:
     df['Polarity'] = df.Score.apply(lambda x: 0 if x == 1 or x == 2 else 1)
     return df
 
-def load_stop_words():
-    stop_words = stopwords.words('english')
+def load_stop_words()-> List[str]:
+    stop_words: List[str] = stopwords.words('english')
     stop_words.remove('not')
     stop_words.remove('no')
 
-    extra_stop_words = ['I']
+    extra_stop_words: List[str] = ['I']
     stop_words.extend(extra_stop_words)
     return stop_words
 
 
-def remove_html(text):
+def remove_html(text: str) -> str:
     soup = BeautifulSoup(text, 'html.parser')
     cleaned_text = soup.get_text()
 
@@ -97,7 +97,7 @@ def map_contractions(text):
             return expanded_text2
 
 
-def lemmatize(string):
+def lemmatize(string: str) -> str:
     nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
     doc = nlp(string)
     lemmatized = " ".join([token.lemma_ for token in doc])
@@ -105,13 +105,13 @@ def lemmatize(string):
     return lemmatized
 
 
-def remove_stop_words(tokens):
+def remove_stop_words(tokens: List) -> str:
     stop_words = load_stop_words()
     tokens = ' '.join([t for t in tokens if t not in stop_words])
     return tokens
 
 
-def clean_text(text: str):
+def clean_text(text: str) -> str:
     '''
     Finds patterns in the text and replaces them with sth
     returns a list of words
@@ -160,9 +160,9 @@ def clean_text(text: str):
     return processed_text
 
 
-def processing_pipeline(data_name,
-                        encoding,
-                        modify_func) -> pd.DataFrame:
+def processing_pipeline(data_name: WindowsPath,
+                        encoding: str,
+                        modify_func: Callable[[pd.DataFrame], pd.DataFrame]) -> pd.DataFrame:
 
     df = pd.read_csv(data_name,
                      encoding=encoding)
