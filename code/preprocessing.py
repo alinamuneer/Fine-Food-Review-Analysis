@@ -19,7 +19,7 @@ sys.path.append('..')
 
 from settings import REVIEW_FILE_PATH, DATA_DIR
 
-N = 100
+N_SAMPLE = 1000
 
 PATTERNS = [
     re.compile(r"[^\w\s]"),  # punctuation
