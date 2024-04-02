@@ -21,10 +21,5 @@ jobs:
           environment-file: environment.yml
           activate-environment: food_review
 
-      - name: Install dependencies
-        run: |
-          conda install --file environment.yml
-          echo "Make sure your environment.yml already creates and activates the `food_review` environment."
-
       - name: Run tests
         run: pytest test
