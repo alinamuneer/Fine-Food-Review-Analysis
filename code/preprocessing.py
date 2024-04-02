@@ -151,13 +151,10 @@ def clean_text(text: str):
     # Double spaces converted to one space
     processed_text = re.sub(PATTERNS[1], ' ', processed_text)
 
-    # Lemmatize
     processed_text = lemmatize(processed_text)
 
-    # Tokenize
     processed_text = word_tokenize(processed_text)
 
-    # Remove stopwords
     processed_text = remove_stop_words(processed_text)
 
     return processed_text
