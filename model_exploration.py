@@ -27,7 +27,7 @@ def apply_sentiment_analysis(df):
     df['comb_sentiment'] = df.combined_text_Summary.apply(detect_sentiment)
     return df
 
-if __name__ == "__main__":
+def main():
     # Load your DataFrame here
     df = pd.read_csv("../data/Reviews_processed_1000.csv")
     
@@ -39,3 +39,8 @@ if __name__ == "__main__":
     
     # Now df contains the cleaned columns
     print(df.head())
+
+
+if __name__ == "__main__":
+    main()
+    
