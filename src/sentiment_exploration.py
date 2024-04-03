@@ -1,5 +1,4 @@
 import pandas as pd
-import ast
 from textblob import TextBlob
 
 def detect_sentiment(text):
