@@ -19,6 +19,15 @@ nltk.download('stopwords')
 
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 
+stop_words = stopwords.words('english')
+stop_words.remove('not')
+stop_words.remove('no')
+
+extra_stop_words = ['I']
+stop_words.extend(extra_stop_words)
+
+STOP_WORDS = set(stop_words)
+
 REGEX_PATTERNS: Dict[str, Pattern] = {
     "urls_mentions_hashtags": re.compile(r'https?://[A-Za-z0-9./]+|@[A-Za-z0-9_]+|#'),  # URLs, mentions, and hashtags
     "numeric_values": re.compile(r'\d+'),  # Digits
@@ -40,16 +49,6 @@ replacements = {
 def add_polarity_label(df: pd.DataFrame) -> pd.DataFrame:
     df['Polarity'] = df.Score.apply(lambda x: 0 if x == 1 or x == 2 else 1)
     return df
-
-def load_stop_words()-> List[str]:
-    stop_words: List[str] = stopwords.words('english')
-    stop_words.remove('not')
-    stop_words.remove('no')
-
-    extra_stop_words: List[str] = ['I']
-    stop_words.extend(extra_stop_words)
-    return stop_words
-
 
 def remove_html(text: str) -> str:
     soup = BeautifulSoup(text, 'html.parser')
@@ -105,10 +104,7 @@ def lemmatize(string: str, nlp_model) -> str:
 
     return lemmatized
 
-stop_words = set(load_stop_words())
-
 def remove_stop_words(tokens: List, stop_ws) -> str:
-    # stop_words = load_stop_words()
     tokens = ' '.join([t for t in tokens if t not in stop_ws])
     return tokens
 
@@ -156,6 +152,6 @@ def clean_text(text: str) -> str:
 
     processed_text = lemmatize(processed_text, nlp)
     processed_text = word_tokenize(processed_text)
-    processed_text = remove_stop_words(processed_text, stop_words)
+    processed_text = remove_stop_words(processed_text, STOP_WORDS)
 
     return processed_text
