@@ -4,8 +4,10 @@ channels:
 dependencies:
   - python=3.11
   - pytest=8.1.1
-  - spacy=3.5.3
   - pandas=2.2.1
+  - ipykernel=6.29.3 # to run the notebook locally on vscode
+  - seaborn=0.13.2
+  - spacy=3.5.3
   - bs4=4.12.2
   - nltk=3.8.1
   - pip
