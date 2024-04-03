@@ -16,6 +16,8 @@ from typing import List, Dict
 
 nltk.download('stopwords')
 
+nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+
 PATTERNS = [
     re.compile(r"[^\w\s]"),  # punctuation
     re.compile(r"\s{2,}"),  # double spaces
@@ -92,17 +94,18 @@ def map_contractions(text: str) -> str:
             return expanded_text2
 
 
-def lemmatize(string: str) -> str:
-    nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
-    doc = nlp(string)
+def lemmatize(string: str, nlp_model) -> str:
+    
+    doc = nlp_model(string)
     lemmatized = " ".join([token.lemma_ for token in doc])
 
     return lemmatized
 
+stop_words = set(load_stop_words())
 
-def remove_stop_words(tokens: List) -> str:
-    stop_words = load_stop_words()
-    tokens = ' '.join([t for t in tokens if t not in stop_words])
+def remove_stop_words(tokens: List, stop_ws) -> str:
+    # stop_words = load_stop_words()
+    tokens = ' '.join([t for t in tokens if t not in stop_ws])
     return tokens
 
 
@@ -146,10 +149,10 @@ def clean_text(text: str) -> str:
     # Double spaces converted to one space
     processed_text = re.sub(PATTERNS[1], ' ', processed_text)
 
-    processed_text = lemmatize(processed_text)
+    # processed_text = lemmatize(processed_text, nlp)
 
     processed_text = word_tokenize(processed_text)
 
-    processed_text = remove_stop_words(processed_text)
+    processed_text = remove_stop_words(processed_text, stop_words)
 
     return processed_text
