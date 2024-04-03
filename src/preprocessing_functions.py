@@ -12,26 +12,29 @@ from nltk.corpus import stopwords
 from contractions import contractions_dict
 
 import pandas as pd
-from typing import List, Dict
+from typing import List, Dict, Pattern
 
 nltk.download('stopwords')
 
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 
-PATTERNS = [
-    re.compile(r"[^\w\s]"),  # punctuation
-    re.compile(r"\s{2,}"),  # double spaces
-    re.compile(r"&quot;"),  # quote marks
-    re.compile(r'@[A-Za-z0-9_]+'),  # mentions
-    re.compile(r'https?://[A-Za-z0-9./]+'),  # links
-    re.compile(r'#'),  # hashtags
-    re.compile(r'\d+'),  # digits
-    re.compile(r'((\w)\2{2,})'),  # consecutive repeated characters
-    re.compile(r'[^a-zA-z0-9\s]'),  # special characters
-    re.compile(r"[´\']s "),
-    re.compile(r'&amp')
-]
+REGEX_PATTERNS: Dict[str, Pattern] = {
+    "urls_mentions_hashtags": re.compile(r'https?://[A-Za-z0-9./]+|@[A-Za-z0-9_]+|#'),  # URLs, mentions, and hashtags
+    "numeric_values": re.compile(r'\d+'),  # Digits
+    "consecutive_char_repetition": re.compile(r'((\w)\2{2,})'),  # Consecutive character repetitions
+    "miscellaneous_text_patterns": re.compile(r"&quot;|&amp|[^a-zA-Z0-9\s]|[´\']s "),  # Miscellaneous text patterns
+    "punctuation_special_chars": re.compile(r"[^\w\s]|_"),  # Punctuation, special characters, and underscores
+    "whitespace_redundancies": re.compile(r"\s{2,}"),  # Redundant whitespaces
+}
 
+replacements = {
+    "urls_mentions_hashtags": '',  # Removed (substituted with empty string)
+    "numeric_values": ' ',  # Replaced with a space
+    "consecutive_char_repetition": r"\2",  # Replaced with the second character in the repetition group
+    "miscellaneous_text_patterns": ' ',  # Replaced with a space
+    "punctuation_special_chars": ' ',  # Replaced with a space
+    "whitespace_redundancies": ' ',  # Replaced with a space
+}
 
 def add_polarity_label(df: pd.DataFrame) -> pd.DataFrame:
     df['Polarity'] = df.Score.apply(lambda x: 0 if x == 1 or x == 2 else 1)
@@ -108,6 +111,22 @@ def remove_stop_words(tokens: List, stop_ws) -> str:
     tokens = ' '.join([t for t in tokens if t not in stop_ws])
     return tokens
 
+def apply_regex_patterns(text: str, patterns: Dict[str, Pattern], replacements: Dict[str, str]) -> str:
+    """
+    Applies specified regex patterns to the text.
+
+    Args:
+        text (str): The input text to be processed.
+        patterns (Dict[str, Pattern]): A dictionary of compiled regex patterns.
+        replacements (Dict[str, str]): A dictionary of replacement strings corresponding to each pattern.
+
+    Returns:
+        str: The processed text after applying all regex patterns.
+    """
+    for pattern_name, pattern in patterns.items():
+        replacement = replacements.get(pattern_name, '')  # Get replacement string for the current pattern
+        text = pattern.sub(replacement, text)
+    return text
 
 def clean_text(text: str) -> str:
     '''
@@ -132,27 +151,10 @@ def clean_text(text: str) -> str:
         pass
 
     # Clean the text
-    processed_text = re.sub(PATTERNS[2], '', processed_text)
-    processed_text = re.sub(PATTERNS[3], '', processed_text)
-    processed_text = re.sub(PATTERNS[4], '', processed_text)
-    processed_text = re.sub(PATTERNS[5], '', processed_text)
-    processed_text = re.sub(PATTERNS[6], '', processed_text)
-    processed_text = re.sub(PATTERNS[7], r"\2", processed_text)
-    processed_text = re.sub(PATTERNS[10], ' ', processed_text)
-    processed_text = re.sub(PATTERNS[8], ' ', processed_text)
-    processed_text = re.sub(PATTERNS[9], ' ', processed_text)
-    processed_text = re.sub(r'_', '', processed_text)
-
-    # Remove punctuation
-    processed_text = re.sub(PATTERNS[0], ' ', processed_text)
-
-    # Double spaces converted to one space
-    processed_text = re.sub(PATTERNS[1], ' ', processed_text)
+    processed_text = apply_regex_patterns(processed_text, REGEX_PATTERNS, replacements)
 
     processed_text = lemmatize(processed_text, nlp)
-
     processed_text = word_tokenize(processed_text)
-
     processed_text = remove_stop_words(processed_text, stop_words)
 
     return processed_text
