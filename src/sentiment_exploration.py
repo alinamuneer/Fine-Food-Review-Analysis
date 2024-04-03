@@ -1,6 +1,6 @@
 import pandas as pd
 import ast
-from textblob import TextBlob, Word
+from textblob import TextBlob
 
 
 # Define a function to parse string representation of list into list and then join the words
@@ -38,7 +38,7 @@ def main():
     df = apply_sentiment_analysis(df)
     
     # Now df contains the cleaned columns
-    print(df.head())
+    #print(df.head())
 
 
 if __name__ == "__main__":
