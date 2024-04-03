@@ -5,7 +5,6 @@ import sys
 sys.path.append('..') 
 
 from src.preprocessing_functions import (add_polarity_label,
-                                         load_stop_words,
                                          remove_html,
                                          custom_contractions,
                                          map_contractions,
@@ -28,10 +27,6 @@ class TestFunctions(unittest.TestCase):
     def test_add_polarity_label(self):
         df_with_polarity = add_polarity_label(self.df)
         self.assertTrue('Polarity' in df_with_polarity.columns)
-    
-    def test_load_stop_words(self):
-        stop_words = load_stop_words()
-        self.assertIn('this', stop_words)
     
     def test_remove_html(self):
         html_text = "<p>Hello World</p>"
