@@ -10,4 +10,9 @@ dependencies:
   - textblob=0.18.0.post0
   - scikit-learn=1.4.1.post1
   - xgboost=2.0.3
-
+  - spacy=3.5.3
+  - bs4=4.12.2
+  - nltk=3.8.1
+  - pip
+  - pip:
+    - contractions
