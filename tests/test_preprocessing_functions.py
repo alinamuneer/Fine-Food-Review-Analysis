@@ -11,7 +11,7 @@ from src.preprocessing_functions import (add_polarity_label,
                                          map_contractions,
                                          nlp,
                                          lemmatize,
-                                         stop_words,
+                                         STOP_WORDS,
                                          remove_stop_words,
                                          REGEX_PATTERNS,
                                          replacements,
@@ -53,7 +53,7 @@ class TestFunctions(unittest.TestCase):
     
     def test_remove_stop_words(self):
         tokens = ['this', 'is', 'a', 'test']
-        filtered_tokens = remove_stop_words(tokens, stop_ws=stop_words)
+        filtered_tokens = remove_stop_words(tokens, stop_ws=STOP_WORDS)
         self.assertNotIn('this', filtered_tokens)
 
     def test_apply_regex_patterns(self):
