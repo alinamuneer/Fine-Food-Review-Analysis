@@ -29,6 +29,10 @@ jobs:
           conda info
           conda list
 
+      - name: Install Spacy module
+        run: |
+          python -m spacy download en_core_web_sm
+
       - name: Run tests
         run: |
           pytest tests
