@@ -14,6 +14,7 @@ from contractions import contractions_dict
 import pandas as pd
 from typing import List, Dict, Pattern
 
+nltk.download('punkt')
 nltk.download('stopwords')
 
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
