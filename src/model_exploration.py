@@ -34,7 +34,7 @@ def main():
     nb = apply_naive_bayes(X, df)
     #y_pred_class = nb.predict(X_new)
     #return y_pred_class
-    
-    # Now df contains the cleaned columns
-    #print(df.head())
-    #print(nb)
+
+
+if __name__ == "__main__":
+    main()
