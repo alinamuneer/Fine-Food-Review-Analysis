@@ -8,12 +8,12 @@ from pathlib import WindowsPath
 import pandas as pd
 
 import sys
-sys.path.append('..')
+sys.path.append('.')
 
 from settings import REVIEW_FILE_PATH, DATA_DIR
 from preprocessing_functions import clean_text, add_polarity_label
 
-N_SAMPLE = 100
+N_SAMPLE = 100000
 
 
 def processing_pipeline(data_name: WindowsPath,
@@ -22,11 +22,11 @@ def processing_pipeline(data_name: WindowsPath,
 
     df = pd.read_csv(data_name,
                      encoding=encoding)
-
-    df = df.sample(n=N_SAMPLE, random_state=42)
-
+    
     # removing duplicates
     df.drop_duplicates(subset=['Text'], inplace=True)
+
+    # df = df.sample(n=N_SAMPLE, random_state=42)
 
     # add extra polarity label
     df = modify_func(df)
@@ -40,8 +40,8 @@ def processing_pipeline(data_name: WindowsPath,
 def save_processed_data(df: pd.DataFrame,
                         data_name: str) -> None:
     processed_data_path = f'{DATA_DIR}/processed'
-    df.to_csv(f'{processed_data_path}/{data_name}_processed_{N_SAMPLE}.csv',
-              index=False, encoding='utf-8')
+    df.to_csv(f'{processed_data_path}/{data_name}_processed.csv', # add _{N_SAMPLE} at end of the
+              index=False, encoding='utf-8')     # file name if you're using a sample of the data
     
 def main(save: bool = True) -> None:
 
