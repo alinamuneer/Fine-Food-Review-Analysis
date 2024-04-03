@@ -66,6 +66,3 @@ class TestFunctions(unittest.TestCase):
         text = "This is a test."
         cleaned_text = clean_text(text)
         self.assertEqual(cleaned_text, 'test')
-
-if __name__ == '__main__':
-    unittest.main()
