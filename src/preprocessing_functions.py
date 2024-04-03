@@ -4,6 +4,7 @@ Preprocessing functions.
 import re
 import unicodedata
 
+import nltk
 import spacy
 from bs4 import BeautifulSoup
 from nltk.tokenize import word_tokenize
@@ -12,6 +13,8 @@ from contractions import contractions_dict
 
 import pandas as pd
 from typing import List, Dict
+
+nltk.download('stopwords')
 
 PATTERNS = [
     re.compile(r"[^\w\s]"),  # punctuation
