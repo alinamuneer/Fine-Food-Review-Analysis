@@ -116,10 +116,10 @@ def clean_text(text: str) -> str:
     '''
 
     # Remove HTML
-    processed_text = remove_html(text)
+    processed_text = remove_html(str(text))
 
     # Remove accents
-    processed_text = unicodedata.normalize('NFKD', text).encode(
+    processed_text = unicodedata.normalize('NFKD', processed_text).encode(
         'ascii', 'ignore').decode('utf-8', 'ignore')
 
     # Convert to lower case
@@ -149,7 +149,7 @@ def clean_text(text: str) -> str:
     # Double spaces converted to one space
     processed_text = re.sub(PATTERNS[1], ' ', processed_text)
 
-    # processed_text = lemmatize(processed_text, nlp)
+    processed_text = lemmatize(processed_text, nlp)
 
     processed_text = word_tokenize(processed_text)
 
