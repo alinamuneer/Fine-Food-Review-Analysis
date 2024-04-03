@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from src.sentiment_exploration import *
+from sentiment_exploration import *
 
 
 def apply_vectorization(df):
@@ -10,11 +10,11 @@ def apply_vectorization(df):
     X = vectorizer.fit_transform(df['combined_text_Summary'])
     return X
 
-def apply_naive_bayes(X, df):
+def apply_naive_bayes(X, y):
     # Initialize the classifier
     nb = MultinomialNB()
     # Fit the classifier
-    nb.fit(X, df['Score'])
+    nb.fit(X, y)
     return nb
 
 def main():
@@ -28,10 +28,11 @@ def main():
     df = apply_sentiment_analysis(df)
     
     # Apply the vectorization function to the DataFrame
-    X = apply_vectorization(df)
+    X = apply_vectorization(df['Source'])
     
     # Apply the naive bayes function to the DataFrame
     nb = apply_naive_bayes(X, df)
+    print(nb)
     #y_pred_class = nb.predict(X_new)
     #return y_pred_class
 
