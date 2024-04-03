@@ -1,0 +1,6 @@
+name: food_review
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytest=8.1.1
