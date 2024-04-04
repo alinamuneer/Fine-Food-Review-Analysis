@@ -1,20 +1,18 @@
 import pandas as pd
 from pathlib import Path
-import numpy as np
 import matplotlib.pyplot as plt
-from statsmodels.tsa.seasonal import seasonal_decompose
-from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 import sys
 sys.path.append('.')
 
-from settings import PROCESSED_DATA_DIR, REVIEW_FILE_PATH
+from settings import DATA_DIR, REVIEW_FILE_PATH
 
-import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+
 
 def get_reviews_per_day(df: pd.DataFrame) -> pd.DataFrame:
     reviews_per_day = df.resample('D').size()
@@ -116,7 +114,7 @@ def plot_predicted_vs_actual(actual: pd.Series, predicted: pd.Series, title: str
 def main():
     # Load your DataFrame here
     data_name = str(REVIEW_FILE_PATH).split('\\')[-1].split('.')[0]
-    data_path = PROCESSED_DATA_DIR / f'{data_name}_processed.csv'
+    data_path = DATA_DIR / f'{data_name}_processed.csv'
 
     df = pd.read_csv(data_path)
 
